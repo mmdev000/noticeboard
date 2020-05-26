@@ -1,18 +1,14 @@
 <template>
   <div id="app">
-    <SimplePagination msg="board"/>
+    <router-view />
   </div>
 </template>
 
 <script>
-import SimplePagination from './components/SimplePagination.vue'
 import request from "request"
 
 export default {
   name: 'App',
-  components: {
-    SimplePagination
-  },
   mounted() {
     request('http://localhost:8080', function (error, response, body) {
       window.console.log('error:', error);

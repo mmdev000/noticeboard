@@ -1,8 +1,7 @@
 <template>
-  
   <div>
     <div class="btn-cr">
-      <b-button squared variant="outline-dark">등록</b-button>
+      <b-button squared variant="outline-dark" @click="writeContent">글쓰기</b-button>
     </div>
     <b-table-simple>
       <b-tr>
@@ -12,7 +11,7 @@
         <b-th>REGDATE</b-th>
         <b-th>CHGDATE</b-th>
       </b-tr>
-      <b-tr v-for="p in paginatedData" :key="p.id">
+      <b-tr v-for="p in paginatedData" :key="p.id" @click="updateContent(p.id)">
         <b-td>{{ p.id }}</b-td>
         <b-td>{{ p.title }}</b-td>
         <b-td>{{ p.contents }}</b-td>
@@ -58,6 +57,16 @@ export default {
     },
     prevPage () {
       this.pageNum -= 1;
+    },
+    writeContent () {
+      this.$router.push({
+        path: '/board/create'
+      })
+    },
+    updateContent (id) {
+      this.$router.push({
+        path: '/board/update/' + id
+      })
     }
   },
   computed: {
