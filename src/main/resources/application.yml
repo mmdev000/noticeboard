@@ -1,0 +1,10 @@
+server:
+  port: 9000
+
+
+spring:
+  datasource:
+    driver-class-name: org.mariadb.jdbc.Driver
+    url: jdbc:mariadb://127.0.0.1:13306/notice-board
+    username: root
+    password: pwd123
