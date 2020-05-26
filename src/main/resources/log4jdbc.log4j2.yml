@@ -1,0 +1,6 @@
+lg4jdbc:
+  spylogdelegator:
+    name: net.sf.log4jdbc.log.slf5jSpyLogDelegator
+  dump:
+    spl:
+      maxlinelength: 0

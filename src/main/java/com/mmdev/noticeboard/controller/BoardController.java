@@ -18,7 +18,12 @@ public class BoardController {
 
     @RequestMapping("/api/getList")
     public List<Board> getList() {
-
-        return boardMapper.getList();
+        List<Board> getList = boardMapper.getList();
+        log.info("log.info");
+        log.warn("log.warn");
+        log.debug("log.debug");
+        log.trace("log.trace");
+        log.error("log.error");
+        return getList;
     }
 }
