@@ -1,17 +1,17 @@
 <template>
   <div id="app">
-    <HelloWorld msg="board"/>
+    <SimplePagination msg="board"/>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/BoardList.vue'
+import SimplePagination from './components/SimplePagination.vue'
 import request from "request"
 
 export default {
   name: 'App',
   components: {
-    HelloWorld
+    SimplePagination
   },
   mounted() {
     request('http://localhost:8080', function (error, response, body) {
