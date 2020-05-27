@@ -8,6 +8,8 @@ import router from "./components/router"
 
 Vue.component('simple-pagination')
 Vue.component('BoardCreate')
+Vue.component('BoardView')
+
 Vue.prototype.$http = axios
 Vue.use(BootstrapVue)
 Vue.config.productionTip = false

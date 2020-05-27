@@ -1,15 +1,34 @@
 <template>
-  <form>
-    
-      제목
-      <b-input :counter="50" label="제목" name="title" required v-model="title" maxlength="50" />
-      
-      내용
-      <b-textarea filled name="contents" hint="내용을 입력해주세요." v-model="contents" :counter="1000" maxlength="1000" />
-      <b-button block outlined color="blue" @click="writeClick"> 등록 </b-button>
-      <b-button block outlined color="blue" @click="writeCancel"> 취소 </b-button>
-    
-  </form>
+  <div>
+    <b-form @submit="writeClick" @reset="writeCancel">
+      <b-form-group label-cols="4" label-cols-lg="2" label-size="lg" label="TITLE" label-for="input-title">
+        <b-form-input
+          id="input-title"
+          size="lg"
+          v-model="title"
+          :counter="50"
+          maxlength="50"
+          required
+          placeholder="Enter title"/>
+      </b-form-group>
+      <b-form-group label-cols="4" label-cols-lg="2" label-size="lg" label="CONTENTS" label-for="input-cont">
+        <b-form-textarea
+          id="input-cont"
+          size="lg"
+          v-model="contents"
+          placeholder="Enter something..."
+          rows="4"
+          max-rows="6"
+          :counter="1000"
+          maxlength="1000"
+          required/>
+      </b-form-group>
+      <div class="form-btn">
+        <b-button squared variant="outline-dark" size="lg" @click="writeClick">Submit</b-button>
+        <b-button squared variant="outline-dark" size="lg" @click="writeCancel">Reset</b-button>
+      </div>
+    </b-form>
+  </div>
 </template>
 
 
@@ -40,3 +59,9 @@ export default {
   }
 }
 </script>
+<style>
+.form-btn button {
+  float: right;
+  margin-right: 0.8rem;
+}
+</style>

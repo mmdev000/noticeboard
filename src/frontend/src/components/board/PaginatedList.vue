@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="btn-cr">
-      <b-button squared variant="outline-dark" @click="writeContent">글쓰기</b-button>
+      <b-button squared variant="outline-dark" size="lg" @click="writeContent">writing</b-button>
     </div>
     <b-table-simple>
       <b-tr>
@@ -11,7 +11,7 @@
         <b-th>REGDATE</b-th>
         <b-th>CHGDATE</b-th>
       </b-tr>
-      <b-tr v-for="p in paginatedData" :key="p.id" @click="updateContent(p.id)">
+      <b-tr v-for="p in paginatedData" :key="p.id" @click="boardView(p.id)">
         <b-td>{{ p.id }}</b-td>
         <b-td>{{ p.title }}</b-td>
         <b-td>{{ p.contents }}</b-td>
@@ -21,11 +21,11 @@
     </b-table-simple>
     <div class="btn-cover">
       <b-button squared variant="outline-dark" :disabled="pageNum === 0" @click="prevPage" class="page-btn">
-        이전
+        prev
       </b-button>
-      <span class="page-count">{{ pageNum + 1 }} / {{ pageCount }} 페이지</span>
+      <span class="page-count">{{ pageNum + 1 }} / {{ pageCount }} Page</span>
       <b-button squared variant="outline-dark" :disabled="pageNum >= pageCount -1" @click="nextPage" class="page-btn">
-        다음
+        next
       </b-button>
     </div>
   </div>
@@ -63,9 +63,9 @@ export default {
         path: '/board/create'
       })
     },
-    updateContent (id) {
+    boardView (id) {
       this.$router.push({
-        path: '/board/update/' + id
+        path: '/board/view/' + id
       })
     }
   },
