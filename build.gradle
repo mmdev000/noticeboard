@@ -40,4 +40,9 @@ dependencies {
 
     // log4jdbc
     implementation 'org.bgee.log4jdbc-log4j2:log4jdbc-log4j2-jdbc4.1:1.16'
+    
+    compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.4' 
+    compile group: 'commons-io', name: 'commons-io', version: '2.5'
+    compile group: 'commons-fileupload', name: 'commons-fileupload', version: '1.4'
+
 }

@@ -1,5 +1,5 @@
 server:
-  port: 9000
+  port: 9009
 
 
 spring:
@@ -11,9 +11,16 @@ spring:
     username: root
     password: pwd123
 
+  servlet:
+    multipart:
+      file-size-threshold: 1MB
+      location: /Users/kmj/upload_local/
+      max-file-size: 100MB
+      max-request-size: 100MB
+
 logging:
   level:
     root: INFO
-    com.mmdev.noticeboard.mapper: DEBUG
+    com.mmdev.noticeboard: DEBUG
   file:
     path: logs
