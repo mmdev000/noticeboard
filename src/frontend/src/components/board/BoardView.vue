@@ -22,6 +22,16 @@
           />
       </b-form-group>
 
+      <b-form-group label-cols="4" label-cols-lg="2" label-size="lg" label="Files">
+        <!-- <b-form-file multiple :file-name-formatter="formatNames" v-model="files"></b-form-file> -->
+        <b-form-file type="file" v-model="data.files"/>
+      </b-form-group>
+
+      
+      <b-form-group>
+        <label>{{ data.fileNames }}</label>
+      </b-form-group>
+
       <div class="form-btn">
         <b-button squared variant="outline-dark" size="lg" @click="updateClick">Update</b-button>
         <b-button squared variant="outline-dark" size="lg" @click="deleteClick">Delete</b-button>
@@ -53,7 +63,19 @@ export default {
     },
     updateClick () {
       if (confirm('정말 수정하시겠습니까?')) {
-        axios.put('http://localhost:8080/api/update', this.data)
+
+        console.log(this.data)
+        const formData = new FormData();
+        formData.append('id', this.data.id);
+        formData.append('title', this.data.title);
+        formData.append('contents', this.data.contents);
+        formData.append('imgpath', this.data.imgpath);
+
+        if (this.data.files != null) {
+          formData.append('files', this.data.files);
+        }
+        
+        axios.put('http://localhost:8080/api/update', formData, {headers: { 'Content-Type': 'multipart/form-data' }})
         .then((response) => {
           console.log(response);
           this.$router.push('/');
