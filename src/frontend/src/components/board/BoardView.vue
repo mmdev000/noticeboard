@@ -24,11 +24,14 @@
 
       <b-form-group label-cols="4" label-cols-lg="2" label-size="lg" label="Files">
         <!-- <b-form-file multiple :file-name-formatter="formatNames" v-model="files"></b-form-file> -->
-        <b-form-file type="file" v-model="data.files"/>
+        <b-form-file type="file" v-model="data.files" @change="selectedFile"/>
       </b-form-group>
 
+      <b-form-group label-cols="4" label-cols-lg="2" label-size="lg">
+        <img id="output">
+      </b-form-group>
       
-      <b-form-group>
+      <b-form-group label-cols="4" label-cols-lg="2" label-size="lg">
         <label>{{ data.fileNames }}</label>
       </b-form-group>
 
@@ -56,10 +59,25 @@ export default {
       .then((response) => {
         console.log(response);
         this.data = response.data;
+
+        if (this.data.imgpath != null) {
+          this.imgView(this.data.imgpath);
+        }
       })
       .catch((error) => {
         console.log(error);
       });
+    },
+    imgView (imgPath) {
+      var arrExt = new Array("bmp", "gif", "jpg", "png", "jpeg");
+      const output = document.getElementById('output');
+
+      for (var i in arrExt) {
+        if (imgPath.split('.')[1] == arrExt[i]) {
+          output.src = 'http://localhost:8080/api/getImg/' + this.data.id;
+          output.style.height = '10rem';
+        }
+      }
     },
     updateClick () {
       if (confirm('정말 수정하시겠습니까?')) {
@@ -99,6 +117,21 @@ export default {
     },
     backClick () {
       this.$router.push('/');
+    },
+    selectedFile: function (event) {
+      const output = document.getElementById('output');
+      const file = event.target.files[0];
+    
+      if (file.type.match('image.*')) {
+        const reader = new FileReader();
+        reader.addEventListener('load', event => {
+          output.src = event.target.result;
+          output.style.height = '10rem';
+        });
+        reader.readAsDataURL(file);
+      } else {
+        output.src = '';
+      }
     }
   },
   data () {
