@@ -25,7 +25,10 @@
       </b-form-group>
       <b-form-group label-cols="4" label-cols-lg="2" label-size="lg" label="Files">
         <!-- <b-form-file multiple :file-name-formatter="formatNames" v-model="files"></b-form-file> -->
-        <b-form-file type="file" v-model="files"/>
+        <b-form-file type="file" v-model="files" @change="selectedFile"/>
+      </b-form-group>
+      <b-form-group label-cols="4" label-cols-lg="2" label-size="lg">
+        <img id="output">
       </b-form-group>
       <div class="form-btn">
         <b-button squared variant="outline-dark" size="lg" @click="writeClick">Submit</b-button>
@@ -62,11 +65,19 @@ export default {
     writeCancel () {
       this.$router.push('/');
     },
-    formatNames(files) {
-      if (files.length === 1) {
-        return files[0].name
+    selectedFile: function (event) {
+      const output = document.getElementById('output');
+      const file = event.target.files[0];
+    
+      if (file.type.match('image.*')) {
+        const reader = new FileReader();
+        reader.addEventListener('load', event => {
+          output.src = event.target.result;
+          output.style.height = '10rem';
+        });
+        reader.readAsDataURL(file);
       } else {
-        return `${files.length} files selected`
+        output.src = '';
       }
     }
   },
