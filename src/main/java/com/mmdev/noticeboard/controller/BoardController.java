@@ -6,7 +6,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.ServletOutputStream;
@@ -101,7 +105,7 @@ public class BoardController {
 
                     file.transferTo(dest);
 
-                    data.setImgpath(dest.getPath().substring(UPLOAD_PATH_LOCAL.length()));
+                    data.setImgpath(dirPath.substring(UPLOAD_PATH_LOCAL.length()));
                 }
             } catch (Exception e) {
                 log.error(e.getMessage());
@@ -120,7 +124,7 @@ public class BoardController {
                 for (MultipartFile file : data.getFiles()) {
                     String originalfileName = file.getOriginalFilename();
 
-                    String setPath = "";
+                    String setPath;
                     if (data.getImgpath() == null || data.getImgpath().equals("null")) {
                         setPath = UPLOAD_PATH_LOCAL + UUID.randomUUID().toString();
                     } else {
@@ -133,7 +137,7 @@ public class BoardController {
 
                     file.transferTo(dest);
 
-                    data.setImgpath(dest.getPath().substring(UPLOAD_PATH_LOCAL.length()));
+                    data.setImgpath(setPath.substring(UPLOAD_PATH_LOCAL.length()));
                 }
             } catch (Exception e) {
                 log.error(e.getMessage());
@@ -146,6 +150,33 @@ public class BoardController {
     @RequestMapping("/delete/{id}")
     public void delete(@PathVariable(value = "id") String id) {
         boardMapper.delete(id);
+    }
+
+    @RequestMapping("/fileDownload/{id}/{fileName}")
+    public ResponseEntity<Resource> fileDownload(@PathVariable String id, @PathVariable String fileName, HttpServletRequest request, HttpServletResponse response) {
+
+        Board data = boardMapper.get(id);
+
+        File target = new File(UPLOAD_PATH_LOCAL + data.getImgpath() + "/" + fileName);
+
+        HttpHeaders header = new HttpHeaders();
+
+        Resource rs = null;
+
+        if (target.exists()) {
+            try {
+                rs = new UrlResource(target.toURI());
+
+                header.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\""+rs.getFilename()+"\"");
+
+                header.setCacheControl("no-cache");
+
+            } catch (Exception e) {
+                log.error("error {}", e);
+            }
+        }
+
+        return new ResponseEntity<>(rs, header, HttpStatus.OK);
     }
 
 
