@@ -1,5 +1,7 @@
 <template>
-  <div>
+  <div label-size="lg">
+    <p class="hr-text">view details</p>
+    <hr>
     <b-form>
       <b-form-group label-cols="4" label-cols-lg="2" label-size="lg" label="title" label-for="label-title">
         <b-form-input
@@ -40,6 +42,36 @@
         <b-button squared variant="outline-dark" size="lg" @click="backClick">Back</b-button>
       </div>
     </b-form>
+    <br><br>
+    <p class="hr-text">comment</p>
+    <hr>
+    <div class="comment-group">
+      <b-input-group prepend="commenting" class="mt-3">
+        <b-form-input 
+          id="input-comment" v-model="commentList.comment"/>
+        <b-input-group-append>
+          <b-button squared variant="outline-dark" @click="writeClick">write</b-button>
+        </b-input-group-append>
+      </b-input-group>
+
+      <br><br>
+      <b-list-group>
+        <b-list-group-item class="flex-column align-items-start" v-for="comment in commentList" v-bind:key="comment.id">
+          <div class="d-flex w-100 justify-content-between">
+            <h5 class="mb-1" @v-model="comment.reguser">{{comment.reguser}}</h5>
+            <small @v-model="comment.chgdate">{{comment.chgdate}}</small>
+          </div>
+
+          <p class="mb-1 comment" @v-model="comment.comment">
+            {{comment.comment}}
+          </p>
+
+          <small>
+            <a href="#">modify</a> <a href="#">delete</a>
+          </small>
+        </b-list-group-item>
+      </b-list-group>
+    </div>
   </div>
 </template>
 
@@ -51,6 +83,7 @@ export default {
   name: 'BoardView',
   created () {
     this.fetch();
+    this.commentFetch();
   },
   methods: {
     fetch() {
@@ -62,6 +95,17 @@ export default {
         // if (this.data.imgpath != null) {
         //   this.imgView(this.data.imgpath);
         // }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    },
+    commentFetch () {
+      axios.get('http://localhost:8080/api/comment/getList')
+      .then((response) => {
+        console.log(response);
+        // this.comment = response.data;
+        this.commentList = response.data;
       })
       .catch((error) => {
         console.log(error);
@@ -145,11 +189,35 @@ export default {
       } else {
         output.src = '';
       }
+    },
+    writeClick () {
+      // const commentText = document.getElementById("input-comment");
+      this.commentList = {
+        bid: this.data.id,
+        comment: this.commentList.comment,
+        reguser: 'mmdev',
+      };
+      console.log('commentText', this.commentList)
+      axios.post('http://localhost:8080/api/comment/insert', this.commentList)
+      .then((response) => {
+        console.log(response);
+        // this.$router.push('/');
+      })
+      .catch((error) => {
+        console.log(error);
+      });
     }
   },
   data () {
     return {
-      data: {}
+      data: {},
+      commentList: [{
+        bid: '',
+        id: '',
+        comment: '',
+        reguser: '',
+        chgdate: ''
+      }]
     }
   }
 }
@@ -158,5 +226,22 @@ export default {
 .form-btn button {
   float: right;
   margin-right: 0.8rem;
+}
+hr {
+  border:thin solid orange;
+  margin-top: 0rem;
+}
+.hr-text {
+  margin: 0rem 0.8rem;
+  padding: 0rem;
+  text-align: left;
+  font-size: 2.5rem
+}
+small {
+  float: right;
+}
+
+.comment {
+  text-align: left;
 }
 </style>
