@@ -1,7 +1,7 @@
 <template>
   <div>
     <b-form>
-      <b-form-group label-cols="4" label-cols-lg="2" label-size="lg" label="TITLE" label-for="label-title">
+      <b-form-group label-cols="4" label-cols-lg="2" label-size="lg" label="title" label-for="label-title">
         <b-form-input
           id="input-title"
           size="lg"
@@ -10,7 +10,7 @@
           maxlength="50"
           />
       </b-form-group>
-      <b-form-group label-cols="4" label-cols-lg="2" label-size="lg" label="CONTENTS" label-for="input-cont">
+      <b-form-group label-cols="4" label-cols-lg="2" label-size="lg" label="contents" label-for="input-cont">
         <b-form-textarea
           id="input-cont"
           size="lg"
@@ -22,8 +22,7 @@
           />
       </b-form-group>
 
-      <b-form-group label-cols="4" label-cols-lg="2" label-size="lg" label="Files">
-        <!-- <b-form-file multiple :file-name-formatter="formatNames" v-model="files"></b-form-file> -->
+      <b-form-group label-cols="4" label-cols-lg="2" label-size="lg" label="files">
         <b-form-file type="file" v-model="data.files" @change="selectedFile"/>
       </b-form-group>
 
@@ -31,8 +30,8 @@
         <img id="output">
       </b-form-group>
       
-      <b-form-group label-cols="4" label-cols-lg="2" label-size="lg">
-        <label>{{ data.fileNames }}</label>
+      <b-form-group label-cols="4" label-cols-lg="2" label-size="lg" label="attached files">
+        <a href="#" @click="fileDownload(name)" v-for="name in data.fileNames" v-bind:key="name">{{ name }} <br></a>
       </b-form-group>
 
       <div class="form-btn">
@@ -60,25 +59,39 @@ export default {
         console.log(response);
         this.data = response.data;
 
-        if (this.data.imgpath != null) {
-          this.imgView(this.data.imgpath);
-        }
+        // if (this.data.imgpath != null) {
+        //   this.imgView(this.data.imgpath);
+        // }
       })
       .catch((error) => {
         console.log(error);
       });
     },
-    imgView (imgPath) {
-      var arrExt = new Array("bmp", "gif", "jpg", "png", "jpeg");
-      const output = document.getElementById('output');
-
-      for (var i in arrExt) {
-        if (imgPath.split('.')[1] == arrExt[i]) {
-          output.src = 'http://localhost:8080/api/getImg/' + this.data.id;
-          output.style.height = '10rem';
-        }
-      }
+    fileDownload (name) {
+      axios({
+      url: 'http://localhost:8080/api/fileDownload/' + this.data.id + '/' + name,
+      method: 'GET',
+      responseType: 'blob', // important
+    }).then((response) => {
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', name);
+      document.body.appendChild(link);
+      link.click();
+    });
     },
+    // imgView (imgPath) {
+    //   var arrExt = new Array("bmp", "gif", "jpg", "png", "jpeg");
+    //   const output = document.getElementById('output');
+
+    //   for (var i in arrExt) {
+    //     if (imgPath.split('.')[1] == arrExt[i]) {
+    //       output.src = 'http://localhost:8080/api/getImg/' + this.data.id;
+    //       output.style.height = '10rem';
+    //     }
+    //   }
+    // },
     updateClick () {
       if (confirm('정말 수정하시겠습니까?')) {
 
