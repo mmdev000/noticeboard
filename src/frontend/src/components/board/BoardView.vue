@@ -3,29 +3,11 @@
     <p class="hr-text">view details</p>
     <hr>
     <b-form>
-      <b-form-group label-cols="4" label-cols-lg="2" label-size="lg" label="title" label-for="label-title">
-        <b-form-input
-          id="input-title"
-          size="lg"
-          v-model="data.title"
-          :counter="50"
-          maxlength="50"
-          />
+      <b-form-group label-cols="4" label-cols-lg="2" label-size="lg" label="title">
+        <p class="data-txt">{{data.title}}</p>
       </b-form-group>
-      <b-form-group label-cols="4" label-cols-lg="2" label-size="lg" label="contents" label-for="input-cont">
-        <b-form-textarea
-          id="input-cont"
-          size="lg"
-          v-model="data.contents"
-          rows="4"
-          max-rows="6"
-          :counter="1000"
-          maxlength="1000"
-          />
-      </b-form-group>
-
-      <b-form-group label-cols="4" label-cols-lg="2" label-size="lg" label="files">
-        <b-form-file type="file" v-model="data.files" @change="selectedFile"/>
+      <b-form-group label-cols="4" label-cols-lg="2" label-size="lg" label="contents">
+        <p class="data-txt">{{data.contents}}</p>
       </b-form-group>
 
       <b-form-group label-cols="4" label-cols-lg="2" label-size="lg">
@@ -33,61 +15,38 @@
       </b-form-group>
       
       <b-form-group label-cols="4" label-cols-lg="2" label-size="lg" label="attached files">
-        <a href="#" @click="fileDownload(name)" v-for="name in data.fileNames" v-bind:key="name">{{ name }} <br></a>
+        <a class="data-txt" href="#" @click="fileDownload(name)" v-for="name in data.fileNames" v-bind:key="name">{{ name }} <br></a>
       </b-form-group>
 
       <div class="form-btn">
-        <b-button squared variant="outline-dark" size="lg" @click="updateClick">Update</b-button>
-        <b-button squared variant="outline-dark" size="lg" @click="deleteClick">Delete</b-button>
-        <b-button squared variant="outline-dark" size="lg" @click="backClick">Back</b-button>
+        <b-button squared variant="outline-dark" size="lg" @click="editClick(data.id)">edit</b-button>
+        <b-button squared variant="outline-dark" size="lg" @click="deleteClick">delete</b-button>
+        <b-button squared variant="outline-dark" size="lg" @click="backClick">back</b-button>
       </div>
     </b-form>
     <br><br>
-    <p class="hr-text">comment</p>
+    <p class="hr-text">comments</p>
     <hr>
-    <div class="comment-group">
-      <b-input-group prepend="commenting" class="mt-3">
-        <b-form-input 
-          id="input-comment" v-model="commentList.comment"/>
-        <b-input-group-append>
-          <b-button squared variant="outline-dark" @click="writeClick">write</b-button>
-        </b-input-group-append>
-      </b-input-group>
-
-      <br><br>
-      <b-list-group>
-        <b-list-group-item class="flex-column align-items-start" v-for="comment in commentList" v-bind:key="comment.id">
-          <div class="d-flex w-100 justify-content-between">
-            <h5 class="mb-1" @v-model="comment.reguser">{{comment.reguser}}</h5>
-            <small @v-model="comment.chgdate">{{comment.chgdate}}</small>
-          </div>
-
-          <p class="mb-1 comment" @v-model="comment.comment">
-            {{comment.comment}}
-          </p>
-
-          <small>
-            <a href="#">modify</a> <a href="#">delete</a>
-          </small>
-        </b-list-group-item>
-      </b-list-group>
-    </div>
+    <comment-view :bId="this.$route.params.id"/>
   </div>
 </template>
 
 
 <script>
 import axios from 'axios'
+import CommentView from '../comment/CommentView'
 
 export default {
   name: 'BoardView',
+  components: {
+    CommentView
+  },
   created () {
     this.fetch();
-    this.commentFetch();
   },
   methods: {
     fetch() {
-      axios.get('http://localhost:8080/api/get/'+this.$route.params.id)
+      axios.get('http://localhost:8080/api/get/' + this.$route.params.id)
       .then((response) => {
         console.log(response);
         this.data = response.data;
@@ -95,17 +54,6 @@ export default {
         // if (this.data.imgpath != null) {
         //   this.imgView(this.data.imgpath);
         // }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-    },
-    commentFetch () {
-      axios.get('http://localhost:8080/api/comment/getList')
-      .then((response) => {
-        console.log(response);
-        // this.comment = response.data;
-        this.commentList = response.data;
       })
       .catch((error) => {
         console.log(error);
@@ -136,29 +84,10 @@ export default {
     //     }
     //   }
     // },
-    updateClick () {
-      if (confirm('정말 수정하시겠습니까?')) {
-
-        console.log(this.data)
-        const formData = new FormData();
-        formData.append('id', this.data.id);
-        formData.append('title', this.data.title);
-        formData.append('contents', this.data.contents);
-        formData.append('imgpath', this.data.imgpath);
-
-        if (this.data.files != null) {
-          formData.append('files', this.data.files);
-        }
-        
-        axios.put('http://localhost:8080/api/update', formData, {headers: { 'Content-Type': 'multipart/form-data' }})
-        .then((response) => {
-          console.log(response);
-          this.$router.push('/');
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-      }
+    editClick (id) {
+      this.$router.push({
+        path: '/board/update/' + id
+      });
     },
     deleteClick () {
       if (confirm('정말 삭제하시겠습니까?')) {
@@ -174,50 +103,11 @@ export default {
     },
     backClick () {
       this.$router.push('/');
-    },
-    selectedFile: function (event) {
-      const output = document.getElementById('output');
-      const file = event.target.files[0];
-    
-      if (file.type.match('image.*')) {
-        const reader = new FileReader();
-        reader.addEventListener('load', event => {
-          output.src = event.target.result;
-          output.style.height = '10rem';
-        });
-        reader.readAsDataURL(file);
-      } else {
-        output.src = '';
-      }
-    },
-    writeClick () {
-      // const commentText = document.getElementById("input-comment");
-      this.commentList = {
-        bid: this.data.id,
-        comment: this.commentList.comment,
-        reguser: 'mmdev',
-      };
-      console.log('commentText', this.commentList)
-      axios.post('http://localhost:8080/api/comment/insert', this.commentList)
-      .then((response) => {
-        console.log(response);
-        // this.$router.push('/');
-      })
-      .catch((error) => {
-        console.log(error);
-      });
     }
   },
   data () {
     return {
-      data: {},
-      commentList: [{
-        bid: '',
-        id: '',
-        comment: '',
-        reguser: '',
-        chgdate: ''
-      }]
+      data: {}
     }
   }
 }
@@ -244,4 +134,14 @@ small {
 .comment {
   text-align: left;
 }
+
+#fileDownText {
+  float: left;
+}
+
+.data-txt {
+  float: left;
+  margin-top: 0.7rem;
+}
+
 </style>

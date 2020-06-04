@@ -3,6 +3,7 @@
     <div class="btn-cr">
       <b-button squared variant="outline-dark" size="lg" @click="writeContent">writing</b-button>
     </div>
+    <hr>
     <b-table-simple>
       <b-tr>
         <b-th>NO</b-th>
@@ -108,4 +109,15 @@ export default {
 .btn-cover .page-count {
   padding: 0 1rem;
 } 
+hr {
+  border:thin solid orange;
+  margin-top: 0rem;
+  margin-bottom: 0rem;
+}
+.hr-text {
+  margin: 0rem 0.8rem;
+  padding: 0rem;
+  text-align: left;
+  font-size: 2.5rem
+}
 </style>

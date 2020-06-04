@@ -1,7 +1,9 @@
 <template>
   <div>
+    <p class="hr-text">writing</p>
+    <hr>
     <b-form method="post" enctype="multipart/form-data" @submit="writeClick" @reset="writeCancel">
-      <b-form-group label-cols="4" label-cols-lg="2" label-size="lg" label="TITLE" label-for="input-title">
+      <b-form-group label-cols="4" label-cols-lg="2" label-size="lg" label="title" label-for="input-title">
         <b-form-input
           id="input-title"
           size="lg"
@@ -11,7 +13,7 @@
           required
           placeholder="Enter title"/>
       </b-form-group>
-      <b-form-group label-cols="4" label-cols-lg="2" label-size="lg" label="CONTENTS" label-for="input-cont">
+      <b-form-group label-cols="4" label-cols-lg="2" label-size="lg" label="contents" label-for="input-cont">
         <b-form-textarea
           id="input-cont"
           size="lg"
@@ -23,7 +25,7 @@
           maxlength="1000"
           required/>
       </b-form-group>
-      <b-form-group label-cols="4" label-cols-lg="2" label-size="lg" label="Files">
+      <b-form-group label-cols="4" label-cols-lg="2" label-size="lg" label="files">
         <!-- <b-form-file multiple :file-name-formatter="formatNames" v-model="files"></b-form-file> -->
         <b-form-file type="file" v-model="files" @change="selectedFile"/>
       </b-form-group>
@@ -31,8 +33,8 @@
         <img id="output">
       </b-form-group>
       <div class="form-btn">
-        <b-button squared variant="outline-dark" size="lg" @click="writeClick">Submit</b-button>
-        <b-button squared variant="outline-dark" size="lg" @click="writeCancel">Reset</b-button>
+        <b-button squared variant="outline-dark" size="lg" @click="writeClick">submit</b-button>
+        <b-button squared variant="outline-dark" size="lg" @click="writeCancel">reset</b-button>
       </div>
     </b-form>
   </div>
@@ -94,5 +96,15 @@ export default {
 .form-btn button {
   float: right;
   margin-right: 0.8rem;
+}
+hr {
+  border:thin solid orange;
+  margin-top: 0rem;
+}
+.hr-text {
+  margin: 0rem 0.8rem;
+  padding: 0rem;
+  text-align: left;
+  font-size: 2.5rem
 }
 </style>
